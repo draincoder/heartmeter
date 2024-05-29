@@ -1,2 +1,2 @@
-# heart-meter
+# HeartMeter
 Blood pressure diary.
