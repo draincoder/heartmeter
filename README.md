@@ -1,2 +1,6 @@
+<div align="center">
+
 # HeartMeter
-Blood pressure diary.
+## Blood pressure diary.
+
+</div>
