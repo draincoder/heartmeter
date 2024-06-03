@@ -1,0 +1,22 @@
+db_url := env("DB_URL")
+
+# Show help message
+[private]
+@default:
+    just --list
+
+# Install all depends
+@install:
+    go mod download
+
+# Run server
+@run:
+    go run cmd/http/main.go
+
+# Up migrations
+@upgrade:
+    goose -dir migrations postgres {{ db_url }} up
+
+# Down migrations
+@downgrade:
+    goose -dir migrations postgres {{ db_url }} down
