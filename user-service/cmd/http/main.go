@@ -32,7 +32,7 @@ func main() {
 		os.Exit(1)
 	}
 	defer func() {
-		err = storage.DB.Close()
+		err = storage.Close()
 		if err != nil {
 			logger.Error("Failed to close storage", slogger.Err(err))
 		} else {

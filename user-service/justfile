@@ -1,4 +1,4 @@
-db_url := env("DB_URL")
+db_url := env_var_or_default("DB_URL", "")
 
 # Show help message
 [private]
@@ -8,6 +8,7 @@ db_url := env("DB_URL")
 # Install all depends
 @install:
     go mod download
+    go install github.com/pressly/goose/v3/cmd/goose@latest
 
 # Run server
 @run:
