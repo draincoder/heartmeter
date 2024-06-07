@@ -1,0 +1,30 @@
+db_migrations := "user/internal/infrastructure/db/migrations"
+db_url := "postgresql://goose:" + \
+env("POSTGRES_PASSWORD") + "@" + \
+env("POSTGRES_HOST") + ":" + \
+env("POSTGRES_PORT") + "/" + \
+env("POSTGRES_DB")
+
+export GOOSE_DBSTRING := db_url
+export GOOSE_DRIVER := "postgres"
+
+# Show help message
+[private]
+@default:
+    just --list
+
+# Install all depends
+@install:
+    go mod download
+
+# Run server
+@run:
+    go run cmd/main.go
+
+# Up migrations
+@upgrade:
+    goose -dir {{ db_migrations }} up
+
+# Down migrations
+@downgrade:
+    goose -dir {{ db_migrations }} down
