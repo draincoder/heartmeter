@@ -14,5 +14,5 @@ idle_timeout = "60s"
 base_url_prefix = "/api/v1"
 
 [logging]
-level = "INFO"
+level = "info"
 render_json = false

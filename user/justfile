@@ -1,12 +1,11 @@
-db_migrations := "user/internal/infrastructure/db/migrations"
-db_url := "postgresql://goose:" + \
-env("POSTGRES_PASSWORD") + "@" + \
-env("POSTGRES_HOST") + ":" + \
-env("POSTGRES_PORT") + "/" + \
-env("POSTGRES_DB")
+set dotenv-load := true
 
-export GOOSE_DBSTRING := db_url
+db_migrations := "./internal/infrastructure/db/migrations"
+db_url := "postgresql://" + env("POSTGRES_USER", "") + ":" + env("POSTGRES_PASSWORD", "") + \
+"@" + env("POSTGRES_HOST", "") + ":" + env("POSTGRES_PORT", "") + "/" + env("POSTGRES_DB", "")
+
 export GOOSE_DRIVER := "postgres"
+export GOOSE_DBSTRING := db_url
 
 # Show help message
 [private]
