@@ -14,7 +14,7 @@ reports_router = APIRouter(
 
 
 @reports_router.post("/generate")
-async def create_measurement(
+async def request_generate_report(
     user_id: UserID,
     interactor: FromDishka[RequestReportInteractor],
 ) -> SuccessResponse:
