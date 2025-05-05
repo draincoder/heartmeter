@@ -15,13 +15,38 @@ services:
         condition: service_healthy
       migration:
         condition: service_completed_successfully
+      rabbit:
+        condition: service_healthy
     networks:
       - heartmeter.postgres.network
       - heartmeter.diary.network
+      - heartmeter.rabbit.network
     env_file:
-      - ./diary.env
+      - ./diary/.env.docker
     volumes:
       - ./logs:/app/logs:rw
+
+  reporter:
+    profiles: ["heartmeter"]
+    container_name: heartmeter.reporter
+    hostname: heartmeter.reporter
+    build:
+      context: ./reporter/
+    restart: unless-stopped
+    expose:
+      - "8081"
+    ports:
+      - "8081:8081"
+    depends_on:
+      rabbit:
+        condition: service_healthy
+    networks:
+      - heartmeter.rabbit.network
+    env_file:
+      - ./reporter/.env.docker
+    volumes:
+      - ./logs:/app/logs:rw
+      - ./reports:/app/reports:rw
 
   migration:
     profiles: ["heartmeter", "migration"]
@@ -35,7 +60,7 @@ services:
     networks:
       - heartmeter.postgres.network
     env_file:
-      - ./diary/.env
+      - ./diary/.env.docker
     volumes:
       - ./diary/alembic.ini:/app/alembic.ini:ro
     command: ["python", "-m", "alembic", "upgrade", "head"]
@@ -75,9 +100,38 @@ services:
       retries: 5
       start_period: 10s
 
+  rabbit:
+    profiles: ["heartmeter"]
+    image: rabbitmq:3.11-management-alpine
+    container_name: heartmeter.rabbit
+    hostname: heartmeter.rabbit
+    restart: unless-stopped
+    expose:
+      - "5672"
+      - "15672"
+    ports:
+      - "127.0.0.1:5671:5671"
+      - "127.0.0.1:5672:5672"
+      - "127.0.0.1:15672:15672"
+    networks:
+      - heartmeter.rabbit.network
+    volumes:
+      - heartmeter.rabbit.data:/var/lib/rabbitmq/:rw
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER:-admin}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD:-admin}
+    healthcheck:
+      test: [ "CMD-SHELL", "rabbitmq-diagnostics check_running -q" ]
+      interval: 10s
+      timeout: 60s
+      retries: 5
+      start_period: 10s
+
 volumes:
   heartmeter.postgres.data: {}
+  heartmeter.rabbit.data: {}
 
 networks:
   heartmeter.diary.network: {}
   heartmeter.postgres.network: {}
+  heartmeter.rabbit.network: {}
