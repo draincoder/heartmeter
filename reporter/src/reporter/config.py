@@ -11,6 +11,7 @@ class AppConfig:
     rmq: RMQConfig
     log: LogConfig
     reports_path: Path
+    weather_base_url: str
 
 
 def read_config() -> AppConfig:
@@ -18,4 +19,5 @@ def read_config() -> AppConfig:
         rmq=RMQConfig(**os.environ),
         log=LogConfig(**os.environ),
         reports_path=Path(os.environ.get("REPORTS_PATH", "./reports")),
+        weather_base_url=os.environ["WEATHER_BASE_URL"],
     )

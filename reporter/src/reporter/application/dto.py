@@ -14,3 +14,9 @@ class Report:
 class History:
     user: User
     data: list[Measurement]
+
+
+@dataclass
+class Weather:
+    pressure: int
+    temperature: int
