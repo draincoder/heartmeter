@@ -40,13 +40,34 @@ services:
     depends_on:
       rabbit:
         condition: service_healthy
+      weather:
+        condition: service_started
     networks:
       - heartmeter.rabbit.network
+      - heartmeter.weather.network
     env_file:
       - ./reporter/.env.docker
     volumes:
       - ./logs:/app/logs:rw
       - ./reports:/app/reports:rw
+
+  weather:
+    profiles: [ "heartmeter" ]
+    container_name: heartmeter.weather
+    hostname: heartmeter.weather
+    build:
+      context: ./weather/
+    restart: unless-stopped
+    expose:
+      - "8082"
+    ports:
+      - "8082:8082"
+    networks:
+      - heartmeter.weather.network
+    env_file:
+      - ./weather/.env.docker
+    volumes:
+      - ./logs:/app/logs:rw
 
   migration:
     profiles: ["heartmeter", "migration"]
@@ -133,5 +154,6 @@ volumes:
 
 networks:
   heartmeter.diary.network: {}
+  heartmeter.weather.network: {}
   heartmeter.postgres.network: {}
   heartmeter.rabbit.network: {}
