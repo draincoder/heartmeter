@@ -6,7 +6,7 @@ from fastapi import Depends, Header, HTTPException, status
 
 def get_user_id(user_id: str = Header("", alias="user-id")) -> UUID:
     if not user_id:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="No user_id header found")
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="No user-id header found")
     try:
         return UUID(user_id)
     except ValueError as e:

@@ -49,3 +49,8 @@ class UUIDGenerator(Protocol):
 
 class TimeGenerator(Protocol):
     def __call__(self) -> datetime: ...
+
+
+class ReportPublisher(Protocol):
+    @abstractmethod
+    async def publish(self, user: User, data: list[Measurement]) -> None: ...

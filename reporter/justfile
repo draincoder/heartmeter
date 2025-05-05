@@ -1,3 +1,5 @@
+set dotenv-load := true
+
 # Show help message
 [private]
 @default:
@@ -5,13 +7,14 @@
 
 # Install all depends for developing
 @install:
-    pdm install -G:all
-    pre-commit install
+    uv pip install -e .
 
-# Run tests
-@test:
-    pytest tests --cov=pyproject --cov-append --cov-report term-missing -v
-
-# Run pre-commit
+# Lint
 @lint:
-    pre-commit run --all-files
+    ruff check --config  ./pyproject.toml --fix
+    ruff format --config  ./pyproject.toml
+    mypy src --config-file ./pyproject.toml
+
+# Run
+@run:
+    python3 -m reporter.main

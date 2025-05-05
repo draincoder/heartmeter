@@ -12,10 +12,13 @@ classifiers = [
 ]
 requires-python = ">=3.13"
 dependencies = [
+    "adaptix>=3.0.0b10",
+    "aio-pika>=9.5.5",
     "alembic>=1.15.2",
     "asyncpg>=0.30.0",
     "dishka>=1.5.3",
     "fastapi>=0.115.12",
+    "faststream>=0.5.39",
     "greenlet>=3.2.1",
     "orjson>=3.10.18",
     "psycopg>=3.2.7",

@@ -10,6 +10,7 @@ from diary.application.measurement import (
     GetMeasurementInteractor,
     UpdateMeasurementInteractor,
 )
+from diary.application.report import RequestReportInteractor
 from diary.application.user import CreateUserInteractor, GetUserInteractor, UpdateUserInteractor
 
 
@@ -30,3 +31,5 @@ class InteractorProvider(Provider):
     create_measurement_interactor = provide(CreateMeasurementInteractor, scope=Scope.REQUEST)
     update_measurement_interactor = provide(UpdateMeasurementInteractor, scope=Scope.REQUEST)
     delete_measurement_interactor = provide(DeleteMeasurementInteractor, scope=Scope.REQUEST)
+
+    request_report_interactor = provide(RequestReportInteractor, scope=Scope.REQUEST)
