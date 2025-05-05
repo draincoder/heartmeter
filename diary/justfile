@@ -1,0 +1,28 @@
+set dotenv-load := true
+
+# Show help message
+[private]
+@default:
+    just --list
+
+# Install all depends for developing
+@install:
+    uv pip install -e .
+
+# Lint
+@lint:
+    ruff check --config  ./pyproject.toml --fix
+    ruff format --config  ./pyproject.toml
+    mypy src --config-file ./pyproject.toml
+
+# Run generate
+@generate name="init":
+    alembic revision --autogenerate -m={{ name }}
+
+# Run upgrade
+@upgrade:
+    alembic upgrade head
+
+# Run
+@run:
+    python3 -m diary.main
