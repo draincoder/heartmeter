@@ -1,0 +1,83 @@
+services:
+  diary:
+    profiles: ["heartmeter"]
+    container_name: heartmeter.diary
+    hostname: heartmeter.diary
+    build:
+      context: ./diary/
+    restart: unless-stopped
+    expose:
+      - "8080"
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migration:
+        condition: service_completed_successfully
+    networks:
+      - heartmeter.postgres.network
+      - heartmeter.diary.network
+    env_file:
+      - ./diary.env
+    volumes:
+      - ./logs:/app/logs:rw
+
+  migration:
+    profiles: ["heartmeter", "migration"]
+    container_name: heartmeter.migration
+    build:
+      context: ./diary/
+    restart: on-failure
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - heartmeter.postgres.network
+    env_file:
+      - ./diary/.env
+    volumes:
+      - ./diary/alembic.ini:/app/alembic.ini:ro
+    command: ["python", "-m", "alembic", "upgrade", "head"]
+
+  postgres:
+    profiles: ["heartmeter", "migration"]
+    container_name: heartmeter.postgres
+    image: "postgres:15-alpine"
+    hostname: heartmeter.postgres
+    restart: unless-stopped
+    expose:
+      - "5432"
+    ports:
+      - "127.0.0.1:15432:5432"
+    networks:
+      - heartmeter.postgres.network
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-postgres}
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --lc-collate=C --lc-ctype=C"
+      POSTGRES_SHARED_BUFFERS: 1GB
+      POSTGRES_EFFECTIVE_CACHE_SIZE: 3GB
+      POSTGRES_WORK_MEM: 400MB
+      POSTGRES_MAINTENANCE_WORK_MEM: 1GB
+      POSTGRES_CHECKPOINT_COMPLETION_TARGET: 0.9
+      POSTGRES_MAX_WAL_SIZE: 2GB
+      POSTGRES_WAL_BUFFERS: 8MB
+      POSTGRES_RANDOM_PAGE_COST: 1.1
+      POSTGRES_EFFECTIVE_IO_CONCURRENCY: 4
+    volumes:
+      - heartmeter.postgres.data:/var/lib/postgresql/data:rw
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 60s
+      retries: 5
+      start_period: 10s
+
+volumes:
+  heartmeter.postgres.data: {}
+
+networks:
+  heartmeter.diary.network: {}
+  heartmeter.postgres.network: {}
