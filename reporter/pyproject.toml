@@ -44,6 +44,7 @@ lint.ignore = [
     "UP035",
     "COM812",
     "PTH123",
+    "G004",
 ]
 
 [tool.ruff.lint.mccabe]

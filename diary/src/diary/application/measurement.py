@@ -1,9 +1,12 @@
+import logging
 from uuid import UUID
 
 from diary.application.interfaces import MeasurementReader, MeasurementWriter, TimeGenerator, TXManager, UUIDGenerator
 from diary.domain.models import Measurement
 from .dto import NewMeasurementDTO, UpdateMeasurementDTO
 from .exceptions import MeasurementNotFoundError
+
+logger = logging.getLogger(__name__)
 
 
 class GetMeasurementInteractor:
@@ -48,6 +51,7 @@ class CreateMeasurementInteractor:
 
         await self._measurement_writer.save(new_measurement)
         await self._tx.commit()
+        logger.info(f"Created measurement {new_measurement.id} by {new_measurement.user_id}")
         return new_measurement
 
 
@@ -85,6 +89,7 @@ class UpdateMeasurementInteractor:
 
         await self._measurement_writer.save(updated_measurement)
         await self._tx.commit()
+        logger.info(f"Updated measurement {measurement.id} by {measurement.user_id}")
         return updated_measurement
 
 
@@ -105,4 +110,5 @@ class DeleteMeasurementInteractor:
             raise MeasurementNotFoundError(measurement_id)
 
         await self._measurement_writer.delete(measurement_id)
+        logger.info(f"Deleted measurement {measurement_id} by {measurement_id}")
         await self._tx.commit()

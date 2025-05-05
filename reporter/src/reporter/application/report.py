@@ -1,8 +1,11 @@
+import logging
 from datetime import date
 
 from reporter.application.dto import History, Weather
 from reporter.application.interfaces import ReportGenerator, ReportSender, WeatherReader
 from reporter.domain.models import Measurement
+
+logger = logging.getLogger(__name__)
 
 
 class ReportInteractor:
@@ -14,7 +17,9 @@ class ReportInteractor:
     async def report(self, data: History) -> None:
         weathers = await self._get_weathers(data.data)
         report = self._generator.generate(data.data, weathers)
+        logger.info(f"Report {report.filename} for user {data.user.id} generated")
         await self._sender.send(data.user, report)
+        logger.info(f"Report {report.filename} successfully sent to {data.user.email} for user {data.user.id}")
 
     async def _get_weathers(self, data: list[Measurement]) -> dict[date, Weather]:
         weathers: dict[date, Weather] = {}

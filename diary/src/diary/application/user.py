@@ -1,9 +1,12 @@
+import logging
 from uuid import UUID
 
 from diary.application.interfaces import TimeGenerator, TXManager, UserReader, UserWriter, UUIDGenerator
 from diary.domain.models import User
 from .dto import NewUserDTO, UpdateUserDTO
 from .exceptions import EmailAlreadyExistsError, UserNotFoundError
+
+logger = logging.getLogger(__name__)
 
 
 class GetUserInteractor:
@@ -48,6 +51,7 @@ class CreateUserInteractor:
 
         await self._user_writer.save(new_user)
         await self._tx.commit()
+        logger.info(f"Created new user with id {new_user.id} and email {new_user.email}")
         return new_user
 
 
@@ -87,4 +91,5 @@ class UpdateUserInteractor:
 
         await self._user_writer.save(updated_user)
         await self._tx.commit()
+        logger.info(f"User with id {updated_user.id} was updated")
         return updated_user

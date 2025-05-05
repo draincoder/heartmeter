@@ -1,3 +1,4 @@
+import logging
 from uuid import UUID
 
 from diary.application.interfaces import (
@@ -6,6 +7,8 @@ from diary.application.interfaces import (
     UserReader,
 )
 from .exceptions import UserNotFoundError
+
+logger = logging.getLogger(__name__)
 
 
 class RequestReportInteractor:
@@ -26,3 +29,4 @@ class RequestReportInteractor:
 
         data = await self._measurement_reader.get_all_by_user_id(user.id)
         await self._report_publisher.publish(user, data)
+        logger.info(f"Report for user {user.id} was requested, len={len(data)}")
