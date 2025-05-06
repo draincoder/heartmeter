@@ -7,6 +7,7 @@ requires-python = ">=3.13"
 dependencies = [
     "aio-pika>=9.5.5",
     "aiohttp>=3.11.18",
+    "common",
     "faststream>=0.5.39",
     "openpyxl>=3.1.5",
 ]
@@ -77,3 +78,6 @@ ignore_missing_imports = true
 show_column_numbers = true
 show_error_context = true
 warn_unreachable = true
+
+[tool.uv.sources]
+common = { path = "../common" }

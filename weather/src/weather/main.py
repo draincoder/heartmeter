@@ -2,8 +2,8 @@ import logging
 
 import uvicorn
 
+from common.logger import setup_logger
 from .config import read_config
-from .logger import setup_logger
 from .api import app
 
 logger = logging.getLogger(__name__)

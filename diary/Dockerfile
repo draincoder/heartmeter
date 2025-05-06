@@ -4,8 +4,9 @@ RUN pip install --no-cache-dir uv
 
 WORKDIR /app
 
-COPY pyproject.toml /app/
-COPY uv.lock /app/
+COPY ./common /common/
+COPY ./diary/pyproject.toml /app/
+COPY ./diary/uv.lock /app/
 
 RUN uv pip install --target=/deps .
 
@@ -14,7 +15,7 @@ FROM python:3.13-slim
 WORKDIR /app
 
 COPY --from=builder /deps /usr/local/lib/python3.13/site-packages
-COPY src /app/src
+COPY ./diary/src /app/src
 
 ENV PYTHONPATH=/app/src
 

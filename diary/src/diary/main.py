@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 from typing import AsyncIterator
 
 import uvicorn
+from common.logger import setup_logger
 from dishka import make_async_container
 from dishka.integrations.fastapi import setup_dishka
 from fastapi import FastAPI
@@ -10,7 +11,6 @@ from faststream.rabbit import RabbitBroker
 
 from diary.config import read_config
 from diary.infrastructure.di import DBProvider, InteractorProvider, RMQProvider
-from diary.infrastructure.log.setup import setup_logger
 from diary.presentation.api.routes.exceptions import setup_exception_handlers
 from diary.presentation.api.routes.measurements import measurements_router
 from diary.presentation.api.routes.reports import reports_router

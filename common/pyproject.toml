@@ -1,31 +1,12 @@
 [project]
-name = "diary"
+name = "common"
 version = "0.1.0"
-description = "Blood pressure diary"
+description = "Common package"
 readme = "README.md"
-authors = [
-    {name = "treaditup", email = "treaditup@gmail.com"},
-]
-classifiers = [
-    "Programming Language :: Python :: 3.13",
-    "Operating System :: OS Independent",
-]
 requires-python = ">=3.13"
 dependencies = [
-    "adaptix>=3.0.0b10",
-    "aio-pika>=9.5.5",
-    "alembic>=1.15.2",
-    "asyncpg>=0.30.0",
-    "common",
-    "dishka>=1.5.3",
-    "fastapi>=0.115.12",
-    "faststream>=0.5.39",
-    "greenlet>=3.2.1",
-    "orjson>=3.10.18",
-    "psycopg>=3.2.7",
-    "psycopg-binary>=3.2.7",
-    "sqlalchemy>=2.0.40",
-    "uvicorn>=0.34.2",
+    "pydantic>=2.11.4",
+    "structlog>=25.3.0",
 ]
 
 [dependency-groups]
@@ -60,14 +41,8 @@ lint.ignore = [
     "ISC001",
     "UP035",
     "COM812",
+    "PTH123",
     "G004",
-]
-
-[tool.ruff.lint.per-file-ignores]
-"src/diary/infrastructure/db/migrations/**" = [
-    "INP001",
-    "ERA001",
-    "I001",
 ]
 
 [tool.ruff.lint.mccabe]
@@ -100,6 +75,3 @@ ignore_missing_imports = true
 show_column_numbers = true
 show_error_context = true
 warn_unreachable = true
-
-[tool.uv.sources]
-common = { path = "../common" }

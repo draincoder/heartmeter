@@ -1,6 +1,7 @@
 import asyncio
 import logging
 
+from common.logger import setup_logger
 from faststream import FastStream, context
 from faststream.rabbit import RabbitBroker
 
@@ -8,7 +9,6 @@ from reporter.application.report import ReportInteractor
 from reporter.config import read_config
 from reporter.infrastructure.email.fake import FakeEmailSender
 from reporter.infrastructure.excel.generator import ExcelGenerator
-from reporter.infrastructure.log.setup import setup_logger
 from reporter.infrastructure.weather.client import AiohttpWeatherClient
 from reporter.presentation.rmq.handler import router
 

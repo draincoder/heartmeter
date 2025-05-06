@@ -2,7 +2,8 @@ import os
 from dataclasses import dataclass
 from pathlib import Path
 
-from reporter.infrastructure.log.config import LogConfig
+from common.logger import LogConfig
+
 from reporter.presentation.rmq.config import RMQConfig
 
 

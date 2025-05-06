@@ -4,7 +4,8 @@ services:
     container_name: heartmeter.diary
     hostname: heartmeter.diary
     build:
-      context: ./diary/
+      context: .
+      dockerfile: diary/Dockerfile
     restart: unless-stopped
     expose:
       - "8080"
@@ -23,15 +24,14 @@ services:
       - heartmeter.rabbit.network
     env_file:
       - ./diary/.env.docker
-    volumes:
-      - ./logs:/app/logs:rw
 
   reporter:
     profiles: ["heartmeter"]
     container_name: heartmeter.reporter
     hostname: heartmeter.reporter
     build:
-      context: ./reporter/
+      context: .
+      dockerfile: reporter/Dockerfile
     restart: unless-stopped
     expose:
       - "8081"
@@ -48,7 +48,6 @@ services:
     env_file:
       - ./reporter/.env.docker
     volumes:
-      - ./logs:/app/logs:rw
       - ./reports:/app/reports:rw
 
   weather:
@@ -56,7 +55,8 @@ services:
     container_name: heartmeter.weather
     hostname: heartmeter.weather
     build:
-      context: ./weather/
+      context: .
+      dockerfile: weather/Dockerfile
     restart: unless-stopped
     expose:
       - "8082"
@@ -66,14 +66,13 @@ services:
       - heartmeter.weather.network
     env_file:
       - ./weather/.env.docker
-    volumes:
-      - ./logs:/app/logs:rw
 
   migration:
     profiles: ["heartmeter", "migration"]
     container_name: heartmeter.migration
     build:
-      context: ./diary/
+      context: .
+      dockerfile: diary/Dockerfile
     restart: on-failure
     depends_on:
       postgres:

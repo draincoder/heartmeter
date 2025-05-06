@@ -1,8 +1,9 @@
 import os
 from dataclasses import dataclass
 
+from common.logger import LogConfig
+
 from diary.infrastructure.db.config import PGConfig
-from diary.infrastructure.log.config import LogConfig
 from diary.infrastructure.rmq.config import RMQConfig
 from diary.presentation.api.config import APIConfig
 
