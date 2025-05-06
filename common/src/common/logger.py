@@ -1,9 +1,11 @@
 import logging
 import sys
+import uuid
 from typing import Any
 
 import structlog
 from pydantic import BaseModel, Field
+from structlog.typing import EventDict, WrappedLogger
 
 
 class LogConfig(BaseModel):
@@ -20,6 +22,7 @@ def _setup_structlog(*, json_format: bool) -> None:
     processors = [
         *_build_default_processors(json_format=json_format),
         structlog.processors.StackInfoRenderer(),
+        additional_serialize,
         structlog.stdlib.PositionalArgumentsFormatter(),
         structlog.processors.UnicodeDecoder(),  # convert bytes to str
         structlog.stdlib.ProcessorFormatter.wrap_for_formatter,  # for integration with default logging
@@ -55,6 +58,13 @@ def _setup_logging(level: str | int, *, json_format: bool) -> None:
     root_logger = logging.getLogger()
     root_logger.addHandler(handler)
     root_logger.setLevel(level)
+
+
+def additional_serialize(logger: WrappedLogger, name: str, event_dict: EventDict) -> EventDict:
+    for key, value in event_dict.items():
+        if isinstance(value, uuid.UUID):
+            event_dict[key] = str(value)
+    return event_dict
 
 
 def _build_default_processors(*, json_format: bool) -> list[Any]:

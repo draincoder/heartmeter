@@ -11,6 +11,7 @@ from reporter.infrastructure.email.fake import FakeEmailSender
 from reporter.infrastructure.excel.generator import ExcelGenerator
 from reporter.infrastructure.weather.client import AiohttpWeatherClient
 from reporter.presentation.rmq.handler import router
+from reporter.presentation.rmq.middleware import RequestIDMiddleware
 
 logger = logging.getLogger(__name__)
 
@@ -20,7 +21,7 @@ async def main() -> None:
     setup_logger(config.log)
     logger.info("Initializing application")
 
-    broker = RabbitBroker(url=config.rmq.url, logger=logger)
+    broker = RabbitBroker(url=config.rmq.url, logger=logger, middlewares=[RequestIDMiddleware])
     broker.include_router(router)
     app = FastStream(broker, logger=logger)
 

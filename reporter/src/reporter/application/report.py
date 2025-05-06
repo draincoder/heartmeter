@@ -17,9 +17,12 @@ class ReportInteractor:
     async def report(self, data: History) -> None:
         weathers = await self._get_weathers(data.data)
         report = self._generator.generate(data.data, weathers)
-        logger.info(f"Report {report.filename} for user {data.user.id} generated")
+        logger.info("Report generated", extra={"user_id": data.user.id, "report_filename": report.filename})
         await self._sender.send(data.user, report)
-        logger.info(f"Report {report.filename} successfully sent to {data.user.email} for user {data.user.id}")
+        logger.info(
+            "Report successfully sent",
+            extra={"user_id": data.user.id, "email": data.user.email, "report_filename": report.filename},
+        )
 
     async def _get_weathers(self, data: list[Measurement]) -> dict[date, Weather]:
         weathers: dict[date, Weather] = {}

@@ -51,7 +51,10 @@ class CreateMeasurementInteractor:
 
         await self._measurement_writer.save(new_measurement)
         await self._tx.commit()
-        logger.info(f"Created measurement {new_measurement.id} by {new_measurement.user_id}")
+        logger.info(
+            "Created new measurement",
+            extra={"user_id": new_measurement.user_id, "measurement_id": new_measurement.id},
+        )
         return new_measurement
 
 
@@ -89,7 +92,7 @@ class UpdateMeasurementInteractor:
 
         await self._measurement_writer.save(updated_measurement)
         await self._tx.commit()
-        logger.info(f"Updated measurement {measurement.id} by {measurement.user_id}")
+        logger.info("Updated measurement", extra={"user_id": measurement.user_id, "measurement_id": measurement.id})
         return updated_measurement
 
 
@@ -110,5 +113,5 @@ class DeleteMeasurementInteractor:
             raise MeasurementNotFoundError(measurement_id)
 
         await self._measurement_writer.delete(measurement_id)
-        logger.info(f"Deleted measurement {measurement_id} by {measurement_id}")
+        logger.info("Deleted measurement", extra={"user_id": user_id, "measurement_id": measurement_id})
         await self._tx.commit()

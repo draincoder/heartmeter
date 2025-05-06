@@ -29,4 +29,4 @@ class RequestReportInteractor:
 
         data = await self._measurement_reader.get_all_by_user_id(user.id)
         await self._report_publisher.publish(user, data)
-        logger.info(f"Report for user {user.id} was requested, len={len(data)}")
+        logger.info("Report was requested", extra={"user_id": user.id, "len": len(data)})

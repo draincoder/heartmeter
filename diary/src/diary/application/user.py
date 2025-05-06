@@ -51,7 +51,7 @@ class CreateUserInteractor:
 
         await self._user_writer.save(new_user)
         await self._tx.commit()
-        logger.info(f"Created new user with id {new_user.id} and email {new_user.email}")
+        logger.info("Created new user", extra={"user_id": new_user.id, "email": new_user.email})
         return new_user
 
 
@@ -91,5 +91,5 @@ class UpdateUserInteractor:
 
         await self._user_writer.save(updated_user)
         await self._tx.commit()
-        logger.info(f"User with id {updated_user.id} was updated")
+        logger.info("User was updated", extra={"user_id": updated_user.id})
         return updated_user

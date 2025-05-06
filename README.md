@@ -18,10 +18,10 @@
 ### Run
 
 ```shell
-docker compose --profile heartmeter up --build -d
+docker compose --profile heartmeter --profile observability up --build -d
 ```
 
 ### Stop
 ```shell
-docker compose --profile heartmeter down
+docker compose --profile heartmeter --profile observability down
 ```

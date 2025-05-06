@@ -146,13 +146,75 @@ services:
       timeout: 60s
       retries: 5
       start_period: 10s
+      
+  grafana:
+    profiles: ["observability"]
+    image: grafana/grafana:latest
+    container_name: heartmeter.grafana
+    hostname: heartmeter.grafana
+    restart: unless-stopped
+    expose:
+      - "3000"
+    ports:
+      - "127.0.0.1:3000:3000"
+    networks:
+      - heartmeter.observability.network
+    volumes:
+      - heartmeter.grafana.data:/var/lib/grafana:rw
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:rw
+      - ./monitoring/grafana/dashboards:/etc/grafana/dashboards
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-admin}
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_DATABASE_WAL=true
+      - VIRTUAL_HOST=heartmeter.grafana
+      - NETWORK_ACCESS=internal
+      - VIRTUAL_PORT=3000
+
+  loki:
+    profiles: ["observability"]
+    image: grafana/loki:2.9.6
+    container_name: heartmeter.loki
+    hostname: heartmeter.loki
+    expose:
+      - "3100"
+    volumes:
+      - ./monitoring/loki/config.yaml:/etc/loki/config.yaml:ro
+      - heartmeter.loki.data:/tmp/:rw
+    command: -config.file=/etc/loki/config.yaml
+    restart: unless-stopped
+    networks:
+      - heartmeter.observability.network
+
+  vector:
+    profiles: ["observability"]
+    image: timberio/vector:0.42.0-alpine
+    container_name: heartmeter.vector
+    hostname: heartmeter.vector
+    restart: unless-stopped
+    command: --config=/etc/vector/vector.toml
+    expose:
+      - "8383"
+    networks:
+      - heartmeter.observability.network
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./monitoring/vector/vector.toml:/etc/vector/vector.toml:ro
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
 
 volumes:
   heartmeter.postgres.data: {}
   heartmeter.rabbit.data: {}
+  heartmeter.loki.data: {}
+  heartmeter.grafana.data: {}
 
 networks:
   heartmeter.diary.network: {}
   heartmeter.weather.network: {}
   heartmeter.postgres.network: {}
   heartmeter.rabbit.network: {}
+  heartmeter.observability.network: {}
