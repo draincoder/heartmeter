@@ -60,7 +60,7 @@ async def unknown_exception_handler(request: Request, err: Exception) -> ORJSONR
 
 async def handle_error(_: Request, err: Exception, message: str, status_code: int) -> ORJSONResponse:
     if isinstance(err, (ApplicationError, HTTPException)):
-        logger.error("Handle error", extra={"error": err, "detail": message})
+        logger.error("Handle error", extra={"error": type(err).__name__, "detail": message})
     else:
         logger.error("Handle unknown error", extra={"error": err}, exc_info=True)
 

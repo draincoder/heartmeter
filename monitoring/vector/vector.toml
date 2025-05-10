@@ -17,6 +17,6 @@ source = ".message = object!(parse_json(.message) ?? {})"
 type = "loki"
 inputs = ["json"]
 encoding.codec = "json"
-labels.event = "log"
-labels.container_name = "{{container_name}}"
+labels.level = "{{ message.level }}"
+labels.container_name = "{{ container_name }}"
 endpoint = "http://heartmeter.loki:3100"

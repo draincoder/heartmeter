@@ -22,7 +22,6 @@ def _setup_structlog(*, json_format: bool) -> None:
     processors = [
         *_build_default_processors(json_format=json_format),
         structlog.processors.StackInfoRenderer(),
-        additional_serialize,
         structlog.stdlib.PositionalArgumentsFormatter(),
         structlog.processors.UnicodeDecoder(),  # convert bytes to str
         structlog.stdlib.ProcessorFormatter.wrap_for_formatter,  # for integration with default logging
@@ -73,6 +72,7 @@ def _build_default_processors(*, json_format: bool) -> list[Any]:
         structlog.stdlib.add_logger_name,
         structlog.contextvars.merge_contextvars,
         structlog.stdlib.ExtraAdder(),
+        additional_serialize,
         structlog.dev.set_exc_info,
         structlog.processors.TimeStamper(fmt="%Y-%m-%d %H:%M:%S.%f", utc=True),
         structlog.processors.dict_tracebacks,

@@ -24,8 +24,8 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
+  "id": 1,
   "links": [],
-  "liveNow": false,
   "panels": [
     {
       "datasource": {
@@ -40,8 +40,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -65,6 +64,7 @@
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
@@ -76,17 +76,20 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.4.6",
+      "pluginVersion": "11.6.1",
       "targets": [
         {
           "datasource": {
             "type": "loki",
             "uid": "loki"
           },
+          "direction": "backward",
+          "editorMode": "code",
           "exemplar": true,
-          "expr": "sum(count_over_time({container_name=~\"$container_name\"} | json | message_level=\"error\" [$__range]))",
+          "expr": "sum(count_over_time({container_name=~\"$container_name\", level=\"error\"} [$__range]))",
           "interval": "",
           "legendFormat": "",
+          "queryType": "range",
           "refId": "A"
         }
       ],
@@ -110,6 +113,7 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "bars",
             "fillOpacity": 0,
             "gradientMode": "none",
@@ -141,8 +145,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               }
             ]
           }
@@ -240,19 +243,23 @@
           "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "single",
           "sort": "none"
         }
       },
-      "pluginVersion": "8.4.3",
+      "pluginVersion": "11.6.1",
       "targets": [
         {
           "datasource": {
             "type": "loki",
             "uid": "loki"
           },
-          "expr": "sum by(message_level) (rate({container_name=~\"$container_name\"} | json | message_level != \"\" | message_level=~\"$log_level\" |= \"$log_keyword\" [1m]))",
+          "direction": "backward",
+          "editorMode": "code",
+          "expr": "sum by(level) (rate({container_name=~\"$container_name\", level=~\"$log_level\"} |= \"$log_keyword\" [1m]))",
           "legendFormat": "{{.message_level}}",
+          "queryType": "range",
           "refId": "A"
         }
       ],
@@ -272,8 +279,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "yellow",
@@ -297,6 +303,7 @@
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
@@ -308,17 +315,20 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.4.6",
+      "pluginVersion": "11.6.1",
       "targets": [
         {
           "datasource": {
             "type": "loki",
             "uid": "loki"
           },
+          "direction": "backward",
+          "editorMode": "code",
           "exemplar": true,
-          "expr": "sum(count_over_time({container_name=~\"$container_name\"} | json | message_level=\"warning\" [$__range]))",
+          "expr": "sum(count_over_time({container_name=~\"$container_name\", level=\"warning\"} [$__range]))",
           "interval": "",
           "legendFormat": "",
+          "queryType": "range",
           "refId": "A"
         }
       ],
@@ -330,6 +340,10 @@
         "type": "loki",
         "uid": "loki"
       },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
       "gridPos": {
         "h": 24,
         "w": 24,
@@ -339,6 +353,7 @@
       "id": 3,
       "options": {
         "dedupStrategy": "none",
+        "enableInfiniteScrolling": false,
         "enableLogDetails": true,
         "prettifyLogMessage": false,
         "showCommonLabels": false,
@@ -347,15 +362,18 @@
         "sortOrder": "Descending",
         "wrapLogMessage": true
       },
-      "pluginVersion": "8.4.3",
+      "pluginVersion": "11.6.1",
       "targets": [
         {
           "datasource": {
             "type": "loki",
             "uid": "loki"
           },
-          "expr": "{container_name=~\"$container_name\"} | json | message_level=~\"$log_level\" | line_format \"{{.container_name}}\\t{{.message_timestamp}}\\t{{.message_level}}\\t\\t{{.message_event}}\" |= \"$log_keyword\"",
+          "direction": "backward",
+          "editorMode": "code",
+          "expr": "{container_name=~\"$container_name\", level=~\"$log_level\"} |= \"$log_keyword\" | json | line_format \"{{.container_name}}\\t{{.message_timestamp}}\\t{{.message_level}}\\t\\t{{.message_event}}\"",
           "hide": false,
+          "queryType": "range",
           "refId": "A"
         }
       ],
@@ -363,8 +381,9 @@
       "type": "logs"
     }
   ],
+  "preload": false,
   "refresh": "10s",
-  "schemaVersion": 39,
+  "schemaVersion": 41,
   "tags": [
     "logs"
   ],
@@ -373,16 +392,16 @@
       {
         "allValue": ".+",
         "current": {
-          "selected": false,
           "text": "All",
-          "value": ".+"
+          "value": [
+            "$__all"
+          ]
         },
         "datasource": {
           "type": "loki",
           "uid": "loki"
         },
         "definition": "",
-        "hide": 0,
         "includeAll": true,
         "label": "Container Name",
         "multi": true,
@@ -396,28 +415,22 @@
         },
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
-        "allValue": "",
         "current": {
-          "selected": false,
-          "text": "All",
-          "value": "$__all"
+          "text": [
+            "$__all"
+          ],
+          "value": [
+            "$__all"
+          ]
         },
-        "hide": 0,
         "includeAll": true,
         "label": "Log Level",
         "multi": true,
         "name": "log_level",
         "options": [
-          {
-            "selected": true,
-            "text": "All",
-            "value": "$__all"
-          },
           {
             "selected": false,
             "text": "error",
@@ -445,17 +458,14 @@
           }
         ],
         "query": "error, warning, info, debug, critical",
-        "skipUrlSync": false,
         "type": "custom"
       },
       {
         "current": {
-          "selected": false,
           "text": "",
           "value": ""
         },
         "description": "query with keyword",
-        "hide": 0,
         "label": "Log Keyword",
         "name": "log_keyword",
         "options": [
@@ -466,7 +476,6 @@
           }
         ],
         "query": "",
-        "skipUrlSync": false,
         "type": "textbox"
       }
     ]
@@ -479,6 +488,5 @@
   "timezone": "",
   "title": "Logs",
   "uid": "logs",
-  "version": 1,
-  "weekStart": ""
+  "version": 5
 }
