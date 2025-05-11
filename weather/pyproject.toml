@@ -5,6 +5,7 @@ description = "Weather api"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "asgi-monitor>=0.6.0",
     "common",
     "fastapi>=0.115.12",
     "uvicorn>=0.34.2",

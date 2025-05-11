@@ -3,12 +3,15 @@ from contextlib import asynccontextmanager
 from typing import AsyncIterator
 
 import uvicorn
+from asgi_monitor.integrations.fastapi import MetricsConfig, setup_metrics
 from common.logger import setup_logger
 from common.sentry import setup_sentry
 from dishka import make_async_container
 from dishka.integrations.fastapi import setup_dishka
 from fastapi import FastAPI
 from faststream.rabbit import RabbitBroker
+from faststream.rabbit.prometheus import RabbitPrometheusMiddleware
+from prometheus_client import CollectorRegistry
 
 from diary.config import read_config
 from diary.infrastructure.di import DBProvider, InteractorProvider, RMQProvider
@@ -28,8 +31,14 @@ def main() -> None:
     setup_sentry(config.sentry, service_name)
 
     logger.info("Initializing application")
+    registry = CollectorRegistry()
+    prom_middleware = RabbitPrometheusMiddleware(
+        registry=registry,
+        app_name=service_name,
+        metrics_prefix="faststream",
+    )
 
-    broker = RabbitBroker(url=config.rmq.url, logger=logger)
+    broker = RabbitBroker(url=config.rmq.url, logger=logger, middlewares=[prom_middleware])
     container = make_async_container(RMQProvider(broker), DBProvider(config.pg), InteractorProvider())
 
     @asynccontextmanager
@@ -41,6 +50,13 @@ def main() -> None:
         logger.info("Container closed")
 
     app = FastAPI(lifespan=lifespan)
+
+    metrics_config = MetricsConfig(
+        app_name=service_name,
+        registry=registry,
+        include_metrics_endpoint=True,
+    )
+    setup_metrics(app, metrics_config)
 
     app.add_middleware(RequestIDMiddleware)
     app.include_router(users_router)

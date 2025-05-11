@@ -20,6 +20,7 @@ services:
       - heartmeter.postgres.network
       - heartmeter.diary.network
       - heartmeter.rabbit.network
+      - heartmeter.observability.network
     env_file:
       - ./diary/.env.docker
 
@@ -41,6 +42,7 @@ services:
     networks:
       - heartmeter.rabbit.network
       - heartmeter.weather.network
+      - heartmeter.observability.network
     env_file:
       - ./reporter/.env.docker
     volumes:
@@ -58,6 +60,7 @@ services:
       - "8082:8082"
     networks:
       - heartmeter.weather.network
+      - heartmeter.observability.network
     env_file:
       - ./weather/.env.docker
 

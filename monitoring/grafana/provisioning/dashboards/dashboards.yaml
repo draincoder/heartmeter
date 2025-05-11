@@ -15,3 +15,17 @@ providers:
   editable: true
   options:
     path: "/etc/grafana/dashboards/cadvisor.json"
+- name: "FastStream"
+  orgId: 1
+  type: "file"
+  disableDeletion: true
+  editable: true
+  options:
+    path: "/etc/grafana/dashboards/faststream.json"
+- name: "FastAPI"
+  orgId: 1
+  type: "file"
+  disableDeletion: true
+  editable: true
+  options:
+    path: "/etc/grafana/dashboards/fastapi.json"
