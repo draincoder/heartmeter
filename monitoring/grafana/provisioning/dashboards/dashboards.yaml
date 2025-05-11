@@ -8,3 +8,10 @@ providers:
   editable: true
   options:
     path: "/etc/grafana/dashboards/logs.json"
+- name: "cAdvisor"
+  orgId: 1
+  type: "file"
+  disableDeletion: true
+  editable: true
+  options:
+    path: "/etc/grafana/dashboards/cadvisor.json"

@@ -18,3 +18,22 @@ datasources:
           name: "TraceID"
           url: "$${__value.raw}"
       timeInterval: "15s"
+  - uid: "prometheus"
+    name: "Prometheus"
+    orgId: 1
+    type: "prometheus"
+    typeName: "Prometheus"
+    access: "proxy"
+    url: "http://heartmeter.prometheus:9090"
+    password: ""
+    user: ""
+    database: ""
+    basicAuth: false
+    isDefault: true
+    readOnly: false
+    editable: true
+    jsonData:
+      exemplarTraceIdDestinations:
+        - datasourceUid: "tempo"
+          name: "TraceID"
+      httpMethod: "POST"

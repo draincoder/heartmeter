@@ -191,11 +191,48 @@ services:
       options:
         max-size: "10m"
 
+  prometheus:
+    profiles: ["observability"]
+    image: prom/prometheus:latest
+    container_name: heartmeter.prometheus
+    hostname: heartmeter.prometheus
+    restart: unless-stopped
+    networks:
+      - heartmeter.observability.network
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - heartmeter.prometheus.data:/prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --enable-feature=exemplar-storage
+    ports:
+      - "9090:9090"
+
+  cadvisor:
+    profiles: ["observability"]
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: heartmeter.cadvisor
+    hostname: heartmeter.cadvisor
+    restart: unless-stopped
+    networks:
+      - heartmeter.observability.network
+    ports:
+      - "8083:8083"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    command:
+      - "-port=8083"
+    privileged: true
+
 volumes:
   heartmeter.postgres.data: {}
   heartmeter.rabbit.data: {}
   heartmeter.loki.data: {}
   heartmeter.grafana.data: {}
+  heartmeter.prometheus.data: {}
 
 networks:
   heartmeter.diary.network: {}
