@@ -13,10 +13,10 @@ datasources:
     version: 1
     jsonData:
       derivedFields:
-        - datasourceUid: "tempo"
+        - datasourceUid: tempo
           matcherRegex: "trace_id=(\\w+)"
-          name: "TraceID"
-          url: "$${__value.raw}"
+          name: TraceID
+          url: $${__value.raw}
       timeInterval: "15s"
   - uid: "prometheus"
     name: "Prometheus"
@@ -37,3 +37,35 @@ datasources:
         - datasourceUid: "tempo"
           name: "TraceID"
       httpMethod: "POST"
+  - uid: "tempo"
+    orgId: 1
+    name: "Tempo"
+    type: "tempo"
+    typeName: "Tempo"
+    access: "proxy"
+    url: "http://heartmeter.tempo:3200"
+    password: ""
+    user: ""
+    database: ""
+    basicAuth: false
+    isDefault: false
+    jsonData:
+      httpMethod: "GET"
+      serviceMap:
+        datasourceUid: "prometheus"
+      nodeGraph:
+        enabled: true
+      search:
+        hide: false
+      lokiSearch:
+        datasourceUid: "loki"
+      tracesToLogsV2:
+        datasourceUid: "loki"
+        spanStartTimeShift: "-1h"
+        spanEndTimeShift: "1h"
+        filterByTraceID: false
+        filterBySpanID: false
+        customQuery: true
+        query: '{container_name=~".+"} | json | message_trace_id="$${__span.traceId}" and message_span_id="$${__span.spanId}" | line_format "{{.container_name}}\t{{.message_timestamp}}\t{{.message_level}}\t\t{{.message_event}}"'
+    readOnly: false
+    editable: true

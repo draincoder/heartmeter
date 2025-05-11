@@ -207,6 +207,7 @@ services:
       - heartmeter.prometheus.data:/prometheus
     command:
       - --config.file=/etc/prometheus/prometheus.yml
+      - --web.enable-remote-write-receiver
       - --enable-feature=exemplar-storage
     ports:
       - "9090:9090"
@@ -230,12 +231,29 @@ services:
       - "-port=8083"
     privileged: true
 
+  tempo:
+    profiles: ["observability"]
+    image: grafana/tempo:2.7.2
+    container_name: heartmeter.tempo
+    hostname: heartmeter.tempo
+    command: ["-config.file=/etc/tempo.yaml"]
+    volumes:
+      - heartmeter.tempo.data:/var/tempo
+      - ./monitoring/tempo/tempo.yaml:/etc/tempo.yaml
+    restart: unless-stopped
+    ports:
+      - "4317:4317"
+      - "3200:3200"
+    networks:
+      - heartmeter.observability.network
+
 volumes:
   heartmeter.postgres.data: {}
   heartmeter.rabbit.data: {}
   heartmeter.loki.data: {}
   heartmeter.grafana.data: {}
   heartmeter.prometheus.data: {}
+  heartmeter.tempo.data: {}
 
 networks:
   heartmeter.diary.network: {}

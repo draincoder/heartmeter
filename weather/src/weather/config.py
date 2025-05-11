@@ -5,6 +5,7 @@ from pydantic import BaseModel, Field
 
 from common.logger import LogConfig
 from common.sentry import SentryConfig
+from common.tracing import TraceConfig
 
 
 class APIConfig(BaseModel):
@@ -17,6 +18,7 @@ class AppConfig:
     api: APIConfig
     log: LogConfig
     sentry: SentryConfig
+    trace: TraceConfig
 
 
 def read_config() -> AppConfig:
@@ -24,4 +26,5 @@ def read_config() -> AppConfig:
         api=APIConfig(**os.environ),
         log=LogConfig(**os.environ),
         sentry=SentryConfig(**os.environ),
+        trace=TraceConfig(**os.environ),
     )

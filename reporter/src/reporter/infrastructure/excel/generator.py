@@ -2,13 +2,17 @@ from datetime import date
 from io import BytesIO
 
 from openpyxl.workbook import Workbook
+from opentelemetry import trace
 
 from reporter.application.dto import Report, Weather
 from reporter.application.interfaces import ReportGenerator
 from reporter.domain.models import Measurement
 
+tracer = trace.get_tracer(__name__)
+
 
 class ExcelGenerator(ReportGenerator):
+    @tracer.start_as_current_span("excel generation")
     def generate(self, data: list[Measurement], weathers: dict[date, Weather]) -> Report:
         wb = Workbook()
         ws = wb.active

@@ -371,7 +371,7 @@
           },
           "direction": "backward",
           "editorMode": "code",
-          "expr": "{container_name=~\"$container_name\", level=~\"$log_level\"} |= \"$log_keyword\" | json | line_format \"{{.container_name}}\\t{{.message_timestamp}}\\t{{.message_level}}\\t\\t{{.message_event}}\"",
+          "expr": "{container_name=~\"$container_name\", level=~\"$log_level\"} |= \"$log_keyword\" | json | line_format \"{{.container_name}}\\t{{.message_timestamp}}\\t{{.message_level}}\\t\\t{{.message_event}} {{if .message_trace_id}}\\t trace_id={{.message_trace_id}}{{end}}\"",
           "hide": false,
           "queryType": "range",
           "refId": "A"

@@ -4,6 +4,7 @@ from pathlib import Path
 
 from common.logger import LogConfig
 from common.sentry import SentryConfig
+from common.tracing import TraceConfig
 from pydantic import BaseModel, Field
 
 from reporter.presentation.rmq.config import RMQConfig
@@ -22,6 +23,7 @@ class AppConfig:
     reports_path: Path
     weather_base_url: str
     metrics: MetricsAPIConfig
+    trace: TraceConfig
 
 
 def read_config() -> AppConfig:
@@ -32,4 +34,5 @@ def read_config() -> AppConfig:
         reports_path=Path(os.environ.get("REPORTS_PATH", "./reports")),
         weather_base_url=os.environ["WEATHER_BASE_URL"],
         metrics=MetricsAPIConfig(**os.environ),
+        trace=TraceConfig(**os.environ),
     )
