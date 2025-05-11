@@ -2,6 +2,7 @@ import asyncio
 import logging
 
 from common.logger import setup_logger
+from common.sentry import setup_sentry
 from faststream import FastStream, context
 from faststream.rabbit import RabbitBroker
 
@@ -17,8 +18,10 @@ logger = logging.getLogger(__name__)
 
 
 async def main() -> None:
+    service_name = "reporter"
     config = read_config()
     setup_logger(config.log)
+    setup_sentry(config.sentry, service_name)
     logger.info("Initializing application")
 
     broker = RabbitBroker(url=config.rmq.url, logger=logger, middlewares=[RequestIDMiddleware])

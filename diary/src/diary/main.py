@@ -4,6 +4,7 @@ from typing import AsyncIterator
 
 import uvicorn
 from common.logger import setup_logger
+from common.sentry import setup_sentry
 from dishka import make_async_container
 from dishka.integrations.fastapi import setup_dishka
 from fastapi import FastAPI
@@ -21,8 +22,11 @@ logger = logging.getLogger(__name__)
 
 
 def main() -> None:
+    service_name = "diary"
     config = read_config()
     setup_logger(config.log)
+    setup_sentry(config.sentry, service_name)
+
     logger.info("Initializing application")
 
     broker = RabbitBroker(url=config.rmq.url, logger=logger)

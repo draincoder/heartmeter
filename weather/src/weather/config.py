@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from pydantic import BaseModel, Field
 
 from common.logger import LogConfig
+from common.sentry import SentryConfig
 
 
 class APIConfig(BaseModel):
@@ -15,10 +16,12 @@ class APIConfig(BaseModel):
 class AppConfig:
     api: APIConfig
     log: LogConfig
+    sentry: SentryConfig
 
 
 def read_config() -> AppConfig:
     return AppConfig(
         api=APIConfig(**os.environ),
         log=LogConfig(**os.environ),
+        sentry=SentryConfig(**os.environ),
     )

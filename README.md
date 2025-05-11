@@ -15,11 +15,21 @@
 - **Reporter**
 - **Weather**
 
+> [!IMPORTANT]
+> To activate Sentry, you must register on https://sentry.io , create a project and update `.env.docker` 
+> in each service by substituting your `DSN` and turning on the flag to `True`.
+
 ### Run
 
 ```shell
 docker compose --profile heartmeter --profile observability up --build -d
 ```
+
+#### `Grafana:` http://127.0.0.1:3000/
+- **default** username: `admin`
+- **default** password: `admin`
+#### `Swagger:` http://127.0.0.1:8080/docs/
+
 
 ### Stop
 ```shell
