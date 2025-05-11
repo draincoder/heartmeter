@@ -1,5 +1,3 @@
-import logging
-
 from fastapi import FastAPI, HTTPException
 from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError
@@ -11,17 +9,15 @@ from starlette.requests import Request
 from diary.application.exceptions import ApplicationError, EmailAlreadyExistsError, NotFoundError
 from diary.presentation.api.models import ErrorResponse, ValidationData, ValidationErrorResponse
 
-logger = logging.getLogger(__name__)
-
 
 def setup_exception_handlers(app: FastAPI) -> None:
+    app.add_exception_handler(Exception, unknown_exception_handler)
     app.add_exception_handler(ValidationError, validation_exception_handler)  # type: ignore[arg-type]
     app.add_exception_handler(RequestValidationError, validation_exception_handler)  # type: ignore[arg-type]
     app.add_exception_handler(HTTPException, api_exception_handler)  # type: ignore[arg-type]
     app.add_exception_handler(EmailAlreadyExistsError, app_conflict_handler)  # type: ignore[arg-type]
     app.add_exception_handler(NotFoundError, not_found_exception_handler)  # type: ignore[arg-type]
     app.add_exception_handler(ApplicationError, app_exception_handler)  # type: ignore[arg-type]
-    app.add_exception_handler(Exception, unknown_exception_handler)
 
 
 async def validation_exception_handler(
@@ -59,9 +55,4 @@ async def unknown_exception_handler(request: Request, err: Exception) -> ORJSONR
 
 
 async def handle_error(_: Request, err: Exception, message: str, status_code: int) -> ORJSONResponse:
-    if isinstance(err, (ApplicationError, HTTPException)):
-        logger.error("Handle error", extra={"error": type(err).__name__, "detail": message})
-    else:
-        logger.error("Handle unknown error", extra={"error": err}, exc_info=True)
-
     return ORJSONResponse(jsonable_encoder(ErrorResponse(message=message)), status_code=status_code)

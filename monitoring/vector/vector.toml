@@ -20,3 +20,4 @@ encoding.codec = "json"
 labels.level = "{{ message.level }}"
 labels.container_name = "{{ container_name }}"
 endpoint = "http://heartmeter.loki:3100"
+batch.max_bytes = 4194304  # 4mb
