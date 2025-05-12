@@ -1,0 +1,7 @@
+---
+apiVersion: 1
+apps:
+  - type: grafana-pyroscope-app
+    jsonData:
+      backendUrl: http://heartmeter.pyroscope:4040
+    secureJsonData:

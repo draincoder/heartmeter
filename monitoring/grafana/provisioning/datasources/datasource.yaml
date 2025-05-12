@@ -67,5 +67,19 @@ datasources:
         filterBySpanID: false
         customQuery: true
         query: '{container_name=~".+"} | json | message_trace_id="$${__span.traceId}" and message_span_id="$${__span.spanId}" | line_format "{{.container_name}}\t{{.message_timestamp}}\t{{.message_level}}\t\t{{.message_event}}"'
+      tracesToProfiles:
+        customQuery: false
+        datasourceUid: "pyroscope"
+        profileTypeId: "process_cpu:cpu:nanoseconds:cpu:nanoseconds"
+        tags:
+          - key: "service.name"
+            value: "service_name"
     readOnly: false
     editable: true
+  - uid: "pyroscope"
+    orgId: 1
+    type: "grafana-pyroscope-datasource"
+    name: "Pyroscope"
+    url: "http://heartmeter.pyroscope:4040"
+    jsonData:
+      keepCookies: ["pyroscope_git_session"]

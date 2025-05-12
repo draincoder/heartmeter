@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from common.logger import LogConfig
+from common.pyroscope import PyroscopeConfig
 from common.sentry import SentryConfig
 from common.tracing import TraceConfig
 from pydantic import BaseModel, Field
@@ -24,6 +25,7 @@ class AppConfig:
     weather_base_url: str
     metrics: MetricsAPIConfig
     trace: TraceConfig
+    pyroscope: PyroscopeConfig
 
 
 def read_config() -> AppConfig:
@@ -35,4 +37,5 @@ def read_config() -> AppConfig:
         weather_base_url=os.environ["WEATHER_BASE_URL"],
         metrics=MetricsAPIConfig(**os.environ),
         trace=TraceConfig(**os.environ),
+        pyroscope=PyroscopeConfig(**os.environ),
     )

@@ -7,6 +7,7 @@ from asgi_monitor.integrations.fastapi import MetricsConfig, TracingConfig, setu
 from asgi_monitor.integrations.fastapi import setup_tracing as setup_api_tracing
 from asgi_monitor.logging.uvicorn import build_uvicorn_log_config
 from common.logger import setup_logger
+from common.pyroscope import setup_pyroscope
 from common.sentry import setup_sentry
 from common.tracing import setup_tracing
 from dishka import make_async_container
@@ -34,6 +35,7 @@ def main() -> None:
     setup_logger(config.log)
     setup_sentry(config.sentry, service_name)
     provider = setup_tracing(config.trace, service_name)
+    setup_pyroscope(config.pyroscope, service_name)
 
     logger.info("Initializing application")
     registry = CollectorRegistry()

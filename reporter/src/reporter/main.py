@@ -2,6 +2,7 @@ import logging
 
 import uvicorn
 from common.logger import setup_logger
+from common.pyroscope import setup_pyroscope
 from common.sentry import setup_sentry
 from common.tracing import setup_tracing
 from faststream import context
@@ -29,6 +30,7 @@ def main() -> None:
     setup_logger(config.log)
     setup_sentry(config.sentry, service_name)
     provider = setup_tracing(config.trace, service_name)
+    setup_pyroscope(config.pyroscope, service_name)
     logger.info("Initializing application")
 
     registry = CollectorRegistry()

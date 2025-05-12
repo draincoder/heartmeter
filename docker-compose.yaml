@@ -158,6 +158,8 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-admin}
       - GF_USERS_ALLOW_SIGN_UP=false
       - GF_DATABASE_WAL=true
+      - GF_INSTALL_PLUGINS=grafana-pyroscope-app
+      - GF_FEATURE_TOGGLES_ENABLE=traceToProfiles tracesEmbeddedFlameGraph
       - VIRTUAL_HOST=heartmeter.grafana
       - NETWORK_ACCESS=internal
       - VIRTUAL_PORT=3000
@@ -247,6 +249,19 @@ services:
     networks:
       - heartmeter.observability.network
 
+  pyroscope:
+    profiles: ["observability"]
+    image: grafana/pyroscope
+    container_name: heartmeter.pyroscope
+    hostname: heartmeter.pyroscope
+    restart: unless-stopped
+    ports:
+      - "4040:4040"
+    networks:
+      - heartmeter.observability.network
+    volumes:
+      - heartmeter.pyroscope.data:/var/lib/pyroscope
+
 volumes:
   heartmeter.postgres.data: {}
   heartmeter.rabbit.data: {}
@@ -254,6 +269,7 @@ volumes:
   heartmeter.grafana.data: {}
   heartmeter.prometheus.data: {}
   heartmeter.tempo.data: {}
+  heartmeter.pyroscope.data: {}
 
 networks:
   heartmeter.diary.network: {}

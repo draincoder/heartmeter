@@ -11,6 +11,7 @@ from asgi_monitor.logging.uvicorn import build_uvicorn_log_config
 from prometheus_client import CollectorRegistry
 
 from common.logger import setup_logger
+from common.pyroscope import setup_pyroscope
 from common.sentry import setup_sentry
 from common.tracing import setup_tracing
 from .config import read_config
@@ -25,6 +26,8 @@ def main() -> None:
     setup_logger(config.log)
     setup_sentry(config.sentry, service_name)
     provider = setup_tracing(config.trace, service_name)
+    setup_pyroscope(config.pyroscope, service_name)
+
     registry = CollectorRegistry()
     metrics_config = MetricsConfig(
         app_name=service_name,
