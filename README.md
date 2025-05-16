@@ -21,7 +21,23 @@
 docker compose --profile heartmeter --profile observability up --build -d
 ```
 
+#### `Grafana:` http://127.0.0.1:3000/dashboards
+- **default** username: `admin`
+- **default** password: `admin`
+#### `Swagger:` http://127.0.0.1:8080/docs/
+
 ### Stop
 ```shell
 docker compose --profile heartmeter --profile observability down
 ```
+
+### Start the load
+Install Grafana [k6](https://grafana.com/docs/k6/latest/set-up/install-k6/)
+
+```shell
+k6 run k6/load.js
+```
+
+### What's New?
+
+[Compare](https://github.com/draincoder/heartmeter/compare/0-simple...1-structlog)
