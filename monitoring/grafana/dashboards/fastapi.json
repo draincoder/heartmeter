@@ -24,7 +24,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 5,
+  "id": 7,
   "links": [],
   "panels": [
     {
@@ -71,7 +71,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.6.1",
+      "pluginVersion": "12.0.0",
       "targets": [
         {
           "datasource": {
@@ -132,7 +132,7 @@
         "textMode": "value_and_name",
         "wideLayout": true
       },
-      "pluginVersion": "11.6.1",
+      "pluginVersion": "12.0.0",
       "targets": [
         {
           "datasource": {
@@ -207,7 +207,7 @@
         "sizing": "auto",
         "valueMode": "color"
       },
-      "pluginVersion": "11.6.1",
+      "pluginVersion": "12.0.0",
       "targets": [
         {
           "datasource": {
@@ -274,7 +274,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.6.1",
+      "pluginVersion": "12.0.0",
       "targets": [
         {
           "datasource": {
@@ -372,17 +372,19 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "11.6.1",
+      "pluginVersion": "12.0.0",
       "targets": [
         {
           "datasource": {
             "type": "prometheus",
             "uid": "prometheus"
           },
+          "editorMode": "code",
           "exemplar": true,
-          "expr": "sum by(path) (fastapi_responses_total{app_name=\"$app_name\", status_code=~\"2.*\", path!=\"/metrics\"}) / sum by(path) (fastapi_responses_total{app_name=\"$app_name\", path!=\"/metrics\"})",
+          "expr": "sum by(path, method) (fastapi_responses_total{app_name=\"$app_name\", status_code=~\"2.*\", path!=\"/metrics\"}) / sum by(path, method) (fastapi_responses_total{app_name=\"$app_name\", path!=\"/metrics\"})",
           "interval": "",
-          "legendFormat": "{{path}}",
+          "legendFormat": "{{method}} {{path}}",
+          "range": true,
           "refId": "A"
         }
       ],
@@ -470,17 +472,19 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "11.6.1",
+      "pluginVersion": "12.0.0",
       "targets": [
         {
           "datasource": {
             "type": "prometheus",
             "uid": "prometheus"
           },
+          "editorMode": "code",
           "exemplar": true,
-          "expr": "sum by(path) (fastapi_responses_total{app_name=\"$app_name\", status_code=~\"5.*\", path!=\"/metrics\"}) / sum by(path) (fastapi_responses_total{app_name=\"$app_name\", path!=\"/metrics\"})",
+          "expr": "sum by(path, method) (fastapi_responses_total{app_name=\"$app_name\", status_code=~\"5.*\", path!=\"/metrics\"}) / sum by(path, method) (fastapi_responses_total{app_name=\"$app_name\", path!=\"/metrics\"})",
           "interval": "",
-          "legendFormat": "{{path}}",
+          "legendFormat": "{{method}} {{path}}",
+          "range": true,
           "refId": "A"
         }
       ],
@@ -567,17 +571,19 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "11.6.1",
+      "pluginVersion": "12.0.0",
       "targets": [
         {
           "datasource": {
             "type": "prometheus",
             "uid": "prometheus"
           },
+          "editorMode": "code",
           "exemplar": true,
-          "expr": "histogram_quantile(.99,sum(rate(fastapi_request_duration_seconds_bucket{app_name=\"$app_name\", path!=\"/metrics\"}[1m])) by(path, le))",
+          "expr": "histogram_quantile(.99,sum(rate(fastapi_request_duration_seconds_bucket{app_name=\"$app_name\", path!=\"/metrics\"}[1m])) by(method, path, le))",
           "interval": "",
-          "legendFormat": "{{path}}",
+          "legendFormat": "{{method}} {{path}}",
+          "range": true,
           "refId": "A"
         }
       ],
@@ -663,17 +669,19 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "11.6.1",
+      "pluginVersion": "12.0.0",
       "targets": [
         {
           "datasource": {
             "type": "prometheus",
             "uid": "prometheus"
           },
+          "editorMode": "code",
           "exemplar": true,
           "expr": "fastapi_requests_in_progress{app_name=\"$app_name\", path!=\"/metrics\"}",
           "interval": "",
-          "legendFormat": "{{path}}",
+          "legendFormat": "{{method}} {{path}}",
+          "range": true,
           "refId": "A"
         }
       ],
@@ -760,17 +768,19 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "11.6.1",
+      "pluginVersion": "12.0.0",
       "targets": [
         {
           "datasource": {
             "type": "prometheus",
             "uid": "prometheus"
           },
+          "editorMode": "code",
           "exemplar": true,
           "expr": "rate(fastapi_requests_total{app_name=\"$app_name\"}[1m])",
           "interval": "",
-          "legendFormat": "{{path}}",
+          "legendFormat": "{{method}} {{path}}",
+          "range": true,
           "refId": "A"
         }
       ],
