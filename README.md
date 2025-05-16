@@ -21,7 +21,16 @@
 docker compose --profile heartmeter up --build -d
 ```
 
+#### `Swagger:` http://127.0.0.1:8080/docs/
+
 ### Stop
 ```shell
 docker compose --profile heartmeter down
+```
+
+### Start the load
+Install Grafana [k6](https://grafana.com/docs/k6/latest/set-up/install-k6/)
+
+```shell
+k6 run k6/load.js
 ```
